@@ -17,7 +17,7 @@ public class Food {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "timeShip")
+    @Column(name = "time_ship")
     private String timeShip;
     @Column(name = "price")
     private double price;

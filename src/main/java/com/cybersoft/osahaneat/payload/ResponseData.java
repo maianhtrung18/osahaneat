@@ -14,6 +14,16 @@ public class ResponseData {
     private String description;
     private Object data;
 
+    private boolean isSuccess = true;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
+
     public int getStatus() {
         return status;
     }
