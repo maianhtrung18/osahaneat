@@ -6,6 +6,10 @@ import com.cybersoft.osahaneat.payload.ResponseData;
 import com.cybersoft.osahaneat.service.imp.FileServiceImp;
 import com.cybersoft.osahaneat.service.imp.RestaurantServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -51,7 +56,7 @@ public class RestaurantController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, resource.getFilename()).body(resource);
     }
-
+    @Cacheable(value = "getDetailRestaurant", key = "#idRestaurant")
     @GetMapping("/detail")
     public ResponseEntity<?> getDetailRestaurant(@RequestParam int idRestaurant){
         ResponseData responseData= new ResponseData();
@@ -59,4 +64,24 @@ public class RestaurantController {
         responseData.setData(restaurantDTO);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
+
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @GetMapping("/clear-cache")
+    @CacheEvict(value = "getDetailRestaurant", allEntries = true)
+    public void clearAllCache() {
+        // Logic khác nếu cần
+    }
+    @GetMapping("/check-cache")
+    public Object checkCache(@RequestParam String cacheName,@RequestParam int key) {
+        Cache cache = cacheManager.getCache(cacheName);
+        if (cache != null) {
+            return cache.get(key) != null ? cache.get(key).get() : "Cache không có dữ liệu!";
+        }
+        return "Cache không tồn tại!";
+    }
+
+
 }

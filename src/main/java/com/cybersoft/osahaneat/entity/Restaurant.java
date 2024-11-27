@@ -17,7 +17,6 @@ public class Restaurant {
     private String  subtitle;
     @Column(name = "description")
     private String description;
-
     @Column(name = "image")
     private String image;
     @Column(name = "is_freeship")

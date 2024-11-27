@@ -8,6 +8,8 @@ import com.cybersoft.osahaneat.utils.JwtUtilHelper;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +27,16 @@ public class LoginController {
 
     @Autowired
     JwtUtilHelper jwtUtilHelper;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @CrossOrigin("*")
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestParam String username, @RequestParam String password){
         ResponseData responseData = new ResponseData();
-
 //        SecretKey  secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 //        String encryptKey = Encoders.BASE64URL.encode(secretKey.getEncoded());
 //        System.out.println(encryptKey);
+        logger.error("hhhg");
 
         if(loginServiceImp.checkLogin(username, password)){
             String token = jwtUtilHelper.gennerateToken(username);
