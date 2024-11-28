@@ -5,12 +5,15 @@ import com.cybersoft.osahaneat.entity.Restaurant;
 import com.cybersoft.osahaneat.payload.ResponseData;
 import com.cybersoft.osahaneat.service.imp.FileServiceImp;
 import com.cybersoft.osahaneat.service.imp.RestaurantServiceImp;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,13 @@ public class RestaurantController {
     FileServiceImp fileServiceImp;
     @Autowired
     RestaurantServiceImp restaurantServiceImp;
+
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    private Gson gson = new GsonBuilder()
+            .serializeSpecialFloatingPointValues()  // Cho phép NaN và Infinity
+            .create();
     @PostMapping("/add")
     public ResponseEntity<?> createRestaurant(@RequestParam MultipartFile file,
                                               @RequestParam String title ,
@@ -56,12 +66,22 @@ public class RestaurantController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, resource.getFilename()).body(resource);
     }
-    @Cacheable(value = "getDetailRestaurant", key = "#idRestaurant")
+//    @Cacheable(value = "getDetailRestaurant", key = "#idRestaurant")
     @GetMapping("/detail")
     public ResponseEntity<?> getDetailRestaurant(@RequestParam int idRestaurant){
         ResponseData responseData= new ResponseData();
-        RestaurantDTO restaurantDTO  =  restaurantServiceImp.getDetailRestaurant(idRestaurant);
-        responseData.setData(restaurantDTO);
+
+        String dataRedis = (String) redisTemplate.opsForValue().get("getDetailRestaurant");
+     if (dataRedis != null){
+         RestaurantDTO restaurantDTO = gson.fromJson(dataRedis, RestaurantDTO.class);
+         responseData.setData(restaurantDTO);
+     }
+     else {
+         RestaurantDTO restaurantDTO  =  restaurantServiceImp.getDetailRestaurant(idRestaurant);
+         responseData.setData(restaurantDTO);
+         String dataJson = gson.toJson(responseData);
+         redisTemplate.opsForValue().set("getDetailRestaurant", dataJson);
+     }
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
