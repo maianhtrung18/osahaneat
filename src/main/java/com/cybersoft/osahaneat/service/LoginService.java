@@ -17,7 +17,6 @@ import java.util.List;
 public class LoginService implements LoginServiceImp {
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     PasswordEncoder passwordEncoder;
 @Override
