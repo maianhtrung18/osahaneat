@@ -25,8 +25,6 @@ spring:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    zookeeper:
-      connect: localhost:2181
 
 jwt:
   privateKey: 8TuhojHlqAX0rFffhhM6RMkahMB9AUiWZnk76c3Xt0M
