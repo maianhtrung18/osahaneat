@@ -1,10 +1,36 @@
-spring.application.name=osahaneat
-spring.datasource.url=jdbc:mysql://localhost:3306/osahaneat
+spring:
+  application:
+    name: osahaneat
 
-spring.datasource.username=root
-spring.datasource.password=admin
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-jwt.privateKey=8TuhojHlqAX0rFffhhM6RMkahMB9AUiWZnk76c3Xt0M
-fileUpload.rootPath=/Users/maianhtrung/MyDrive/JavaBackend/spring/uploads
+  datasource:
+    url: jdbc:mysql://localhost:3306/osahaneat
+    username: root
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    zookeeper:
+      connect: localhost:2181
+
+jwt:
+  privateKey: 8TuhojHlqAX0rFffhhM6RMkahMB9AUiWZnk76c3Xt0M
+
+fileUpload:
+  rootPath: /Users/maianhtrung/MyDrive/JavaBackend/spring/uploads
+
